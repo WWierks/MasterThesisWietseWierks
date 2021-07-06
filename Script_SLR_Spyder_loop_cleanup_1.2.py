@@ -305,22 +305,9 @@ for index, row in selected_stations.iterrows():  # Loop over rows in stations li
        row[dataset_name] = f(row)
        
        
-       
- 
-   #     selected_stations[dataset_name] = [f(station) for _, station in selected_stations.iterrows()]
-    
-   #      # compute the mean
-        
-   # grouped = pd.concat(selected_stations[dataset_name].tolist())[['year', 'height', 'u2', 'v2']].groupby(['year'])
-   # mean_df = grouped.mean().reset_index()
-   # # filter out non-trusted part (before NAP)
-   # mean_df = mean_df[mean_df['year'] >= 1890].copy()
-  
    grouped = row[dataset_name][['year', 'height', 'u2', 'v2']]
    
-   
-   
-   
+
    # Drop all data before 1890 due to incorrect standards, if dataset does not predate 1890 select first date
    def year_selection(df,drop_year): 
        if df.year.min() <= drop_year:
@@ -522,7 +509,7 @@ for index, row in selected_stations.iterrows():  # Loop over rows in stations li
 
       ax.scatter(t, data, alpha=0.3)
       ax.plot(t, model.predict(t), linewidth=2, color='b')
-      ##moker
+      
       ax.axvline(model.parameters['t_break'], color='k')
       ax.axvspan(*cf_intervals['t_break'], color='grey', alpha=0.2)
       ax.set_title('Trend break test for ' + str(row["name"]) + ' station',loc = 'left',size=20)
@@ -561,13 +548,13 @@ for index, row in selected_stations.iterrows():  # Loop over rows in stations li
    
    
    # summary of the broken linear model
-   #print('rho=%s' % broken_linear_fit.history['rho'][-1])
-   #IPython.display.display(broken_linear_fit.summary(yname='Sea-surface height', xname=broken_names))
+   print('rho=%s' % broken_linear_fit.history['rho'][-1])
+   IPython.display.display(broken_linear_fit.summary(yname='Sea-surface height', xname=broken_names))
    
    # summary of the quadratic model
-   #print('rho=%s' % quadratic_fit.history['rho'][-1])
+   print('rho=%s' % quadratic_fit.history['rho'][-1])
    
-   #quadratic_fit.summary(yname='Sea-surface height', xname=quadratic_names)
+   quadratic_fit.summary(yname='Sea-surface height', xname=quadratic_names)
    
     
    #mean_wind = mean_df.set_index('year').loc[1890][['u2', 'v2']]
@@ -619,23 +606,6 @@ for index, row in selected_stations.iterrows():  # Loop over rows in stations li
        
        fig.line(mean_df.year, broken_linear_fit.predict(), line_width=3, color=colors[3], legend_label='Broken')
        fig.line(mean_df.year, quadratic_fit.predict(), line_width=3, color=colors[4], legend_label='Quadratic')
-       #fig.line(mean_df.year, linear_with_mean_wind, line_width=3, color='#bb33bb', legend_label='Linear (mean wind)')
-       #fig.patch(
-       #     np.r_[mean_df.year[::-1], mean_df.year],
-       #     np.r_[linear_with_mean_wind_confidence_interval[::-1, 0], linear_with_mean_wind_confidence_interval[:, 1]],
-       #     color='#bb33bb',
-       #     alpha=0.3, 
-       #     legend_label='Linear (mean wind)'
-       # )
-       # fig.patch(
-       #     np.r_[mean_df.year[::-1], mean_df.year],
-       #     np.r_[linear_with_mean_wind_prediction_interval[::-1, 0], linear_with_mean_wind_prediction_interval[:, 1]],
-       #     color='#bb33bb',
-       #     alpha=0.1, 
-       #     legend_label='Linear (mean wind)'
-       # )
-       #fig.line(mean_df.year, mean_df.height.rolling(18, center=True).mean(), line_width=3, color='#33bb33', legend_label='Rolling 18 year mean (centered)')
-   
        fig.legend.location = "top_left"
        fig.yaxis.axis_label = 'waterlevel [mm] MSL (1971-2006)'
        fig.xaxis.axis_label = 'year'
